@@ -103,7 +103,7 @@ class DatabaseSeeder extends Seeder
         */
         $kategori = [
             [
-                'nama_kategori' => 'Wawancara',
+                'nama_kategori' => 'Kepesantrenan',
                 'tipe_kriteria' => 'threshold',
                 'minimal_benar' => 3,
                 'bobot' => null,
@@ -115,13 +115,13 @@ class DatabaseSeeder extends Seeder
                 'bobot' => 40,
             ],
             [
-                'nama_kategori' => 'Hafalan Bacaan Salat',
+                'nama_kategori' => 'Materi Bacaan Salat',
                 'tipe_kriteria' => 'benefit',
                 'minimal_benar' => null,
                 'bobot' => 40,
             ],
             [
-                'nama_kategori' => 'Tulis Ayat',
+                'nama_kategori' => 'Teori Penulisan Ayat',
                 'tipe_kriteria' => 'benefit',
                 'minimal_benar' => null,
                 'bobot' => 20,
