@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Santri;
 
 use App\Http\Controllers\Controller;
 use App\Models\DataDiriSantri;
+use App\Models\TahunAkademik;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -16,16 +17,31 @@ class PendaftarController extends Controller
         $data = $user->dataDiri;
         return view('santri.pendaftar.index', compact('data', 'user'));
     }
-
     public function store(Request $request)
     {
+        $request->validate([
+            'nisn' => [
+                'required',
+                'digits:10',
+                'unique:data_diri_santri,nisn'
+            ],
+            'nama_lengkap' => 'required|string|max:255',
+            'email' => 'required|email',
+        ]);
+
+        $tahunAktif = TahunAkademik::where('aktif', 1)->firstOrFail();
+
         DataDiriSantri::create(array_merge(
             $request->all(),
-            ['user_id' => Auth::id()]
+            [
+                'user_id' => Auth::id(),
+                'tahun_akademik_id' => $tahunAktif->id,
+            ]
         ));
 
         return back()->with('success', 'Data berhasil disimpan.');
     }
+
 
     public function edit()
     {
@@ -38,17 +54,29 @@ class PendaftarController extends Controller
     public function update(Request $request)
     {
         $request->validate([
+            'nisn' => [
+                'required',
+                'digits:10',
+                'unique:data_diri_santri,nisn'
+            ],
             'nama_lengkap' => 'required',
             'jenis_kelamin' => 'required|in:L,P',
             'pendidikan_tujuan' => 'required'
+        ], [
+            'nisn.required' => 'NISN harus diisi.',
+            'nisn.digits' => 'NISN harus terdiri dari 10 angka.',
+            'nisn.unique' => 'NISN sudah terdaftar.',
+            'nama_lengkap.required' => 'Nama lengkap harus diisi.',
+            'jenis_kelamin.required' => 'Jenis kelamin harus diisi.',
+            'pendidikan_tujuan.required' => 'Pendidikan tujuan harus diisi.',
         ]);
 
         $user = Auth::user();
         $user->update([
-            'name'     => $request->nama_lengkap,
-            'email'    => $request->email,
-            'no_telp'  => $request->no_telp,
-            'nik'      => $request->nik,
+            'name' => $request->nama_lengkap,
+            'email' => $request->email,
+            'no_telp' => $request->no_telp,
+            'nik' => $request->nik,
         ]);
 
         $data = DataDiriSantri::firstOrNew(['user_id' => $user->id]);
@@ -107,7 +135,10 @@ class PendaftarController extends Controller
             $data->foto_kk = $path;
         }
 
+        $tahunAktif = TahunAkademik::where('aktif', 1)->firstOrFail();
+        $data->tahun_akademik_id = $tahunAktif->id;
+
         $data->save();
-        return redirect()->route('santri.pendaftar.index')->with('success', 'Data berhasil disimpan.');
+        return redirect()->route('santri.jadwal.index')->with('success', 'Data berhasil disimpan.');
     }
 }

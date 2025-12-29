@@ -10,6 +10,7 @@ class DataDiriSantri extends Model
 
     protected $fillable = [
         'user_id',
+        'tahun_akademik_id',
         'nama_lengkap',
         'kabupaten_lahir',
         'tanggal_lahir',
@@ -41,6 +42,7 @@ class DataDiriSantri extends Model
         'info_lainnya',
         'pendidikan_tujuan',
         'status_seleksi',
+        'nilai_akhir',
     ];
 
     protected $casts = [

@@ -23,8 +23,6 @@ class StatusSeleksiController extends Controller
         $pembayaran = PembayaranSantri::where('user_id', $user->id)->first();
         $jadwal = JadwalTesSantri::where('user_id', $user->id)->first();
 
-        $pengumuman = PengumumanHasil::latest()->first();
-
         $tahun = $tahunAktif ?? null;
 
         $biayaDaftarUlang = PengaturanPembayaran::where('jenis', 'daftar_ulang')
@@ -38,6 +36,13 @@ class StatusSeleksiController extends Controller
             ->latest()
             ->first();
 
+        $dataDiri = $user->dataDiri;
+        $pengumuman = PengumumanHasil::where('tahun_akademik_id', $dataDiri->tahun_akademik_id)
+            ->where('status', 'sudah')
+            ->first();
+
+        $statusSeleksi = $dataDiri->status_seleksi;
+
         return view('santri.status.index', compact(
             'user',
             'pembayaran',
@@ -45,7 +50,8 @@ class StatusSeleksiController extends Controller
             'pengumuman',
             'biayaDaftarUlang',
             'rekening',
-            'pembayaranDU'
+            'pembayaranDU',
+            'statusSeleksi'
         ));
     }
 }

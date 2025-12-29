@@ -2,40 +2,56 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PengumumanHasil;
+use App\Models\TahunAkademik;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
         $user = auth()->user();
 
+        $jadwalTes = $user->jadwalTes;
+
+        $statusJadwalTes = 'belum';
+        if ($jadwalTes) {
+            if ($jadwalTes->sudah_mulai) {
+                $statusJadwalTes = 'selesai';
+            } elseif (Carbon::parse($jadwalTes->waktu_selesai)->isPast()) {
+                $statusJadwalTes = 'kadaluarsa';
+            } else {
+                $statusJadwalTes = 'aktif';
+            }
+        }
+
+
+        $tahunAktif = TahunAkademik::where('aktif', true)->first();
+
+        $pengumumanSudah = false;
+
+        if ($tahunAktif) {
+            $pengumumanSudah = PengumumanHasil::where('tahun_akademik_id', $tahunAktif->id)
+                ->where('status', 'sudah')
+                ->exists();
+        }
+
+
         return view('home', [
             'role' => $user->role,
-            'dataDiri' => $user->dataDiri ?? null,
-            'pembayaran' => $user->pembayaran()->latest()->first() ?? null,
-            'jadwalTes' => $user->jadwalTes ?? null,
-            'hasil' => $user->hasilTes ?? null,
+            'dataDiri' => $user->dataDiri,
+            'pembayaran' => $user->pembayaran()->latest()->first(),
+            'jadwalTes' => $jadwalTes,
+            'statusJadwalTes' => $statusJadwalTes,
+            'pengumumanSudah' => $pengumumanSudah,
 
+            // ADMIN
             'totalPendaftar' => \App\Models\User::where('role', 'santri')->count(),
             'menunggu' => \App\Models\PembayaranSantri::where('status', 'menunggu')->count(),
             'terverifikasi' => \App\Models\PembayaranSantri::where('status', 'diterima')->count(),
             'totalSoal' => \App\Models\Soal::count(),
+            'tahunAktif' => $tahunAktif
         ]);
     }
 }

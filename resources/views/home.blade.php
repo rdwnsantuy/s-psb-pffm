@@ -183,6 +183,17 @@
         DASHBOARD SANTRI
 ===================================== --}}
     @if ($role === 'santri')
+        @if ($pengumumanSudah)
+            <div class="alert alert-info border-0 shadow-sm">
+                <i class="bi bi-megaphone-fill me-2"></i>
+                <strong>Pengumuman Seleksi</strong><br>
+                Pengumuman hasil seleksi Tahun Akademik
+                <strong>{{ $tahunAktif->tahun }}</strong>
+                telah diumumkan.
+                Pendaftaran santri baru sudah ditutup.
+            </div>
+        @endif
+
         <div class="page-title">Halo, {{ Auth::user()->name }}</div>
         <div class="sub-title">Berikut progress pendaftaran Anda.</div>
 
@@ -198,7 +209,7 @@
             <div class="step-item">
                 <span class="step-label">Upload Pembayaran</span>
                 <span
-                    class="badge-modern 
+                    class="badge-modern
                 {{ $pembayaran ? ($pembayaran->status == 'diterima' ? 'bg-success2' : 'bg-warning2') : 'bg-gray' }}">
                     {{ $pembayaran ? ucfirst($pembayaran->status) : 'Belum' }}
                 </span>
@@ -206,18 +217,17 @@
 
             <div class="step-item">
                 <span class="step-label">Jadwal Tes</span>
-                <span class="badge-modern {{ $jadwalTes ? 'bg-info2' : 'bg-gray' }}">
-                    {{ $jadwalTes ? 'Tersedia' : 'Belum Ada' }}
-                </span>
-            </div>
 
-            <div class="step-item">
-                <span class="step-label">Hasil Seleksi</span>
-                <span class="badge-modern {{ $hasil ? 'bg-primary2' : 'bg-gray' }}">
-                    {{ $hasil ? 'Siap Dilihat Saat Pengumuman' : 'Belum' }}
-                </span>
+                @if ($statusJadwalTes === 'belum')
+                    <span class="badge-modern bg-gray">Belum Ada</span>
+                @elseif ($statusJadwalTes === 'aktif')
+                    <span class="badge-modern bg-primary2">Belum Mengikuti Tes</span>
+                @elseif ($statusJadwalTes === 'selesai')
+                    <span class="badge-modern bg-success2">Sudah Mengikuti Tes</span>
+                @elseif ($statusJadwalTes === 'kadaluarsa')
+                    <span class="badge-modern bg-warning2">Tidak Hadir</span>
+                @endif
             </div>
-
         </div>
     @endif
 

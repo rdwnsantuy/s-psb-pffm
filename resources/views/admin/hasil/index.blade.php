@@ -10,19 +10,28 @@
         <h4 class="fw-bold mb-3">Hasil Tes Peserta</h4>
 
         <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle">
+            <table class="table table-bordered table-striped align-middle text-center">
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
                         <th>Nama Peserta</th>
                         <th>No. Pendaftaran</th>
 
-                        {{-- LOOPING KATEGORI MENJADI TH --}}
                         @foreach ($kategori as $kat)
-                            <th>{{ $kat->nama_kategori }}</th>
+                            <th class="text-nowrap">
+                                {{ $kat->nama_kategori }} <br>
+                                <small class="text-muted">
+                                    @if ($kat->tipe_kriteria === 'threshold')
+                                        Threshold
+                                    @else
+                                        Bobot {{ $kat->bobot }}%
+                                    @endif
+                                </small>
+                            </th>
                         @endforeach
 
-                        <th>Hasil Akhir</th>
+                        <th class="text-nowrap">Nilai Akhir</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
 
@@ -30,42 +39,45 @@
                     @foreach ($santri as $i => $s)
                         @php
                             $hasilTes = $s->hasilTes->keyBy('kategori_id');
-                            $semuaLulus = true;
+                            $status = $s->dataDiri->status_seleksi;
                         @endphp
 
                         <tr>
                             <td>{{ $i + 1 }}</td>
-                            <td>{{ $s->name }}</td>
-                            <td>{{ $s->id }}</td>
+                            <td class="text-start">{{ $s->name }}</td>
+                            <td>{{ $s->registration_id }}</td>
 
-                            {{-- LOOP SETIAP KATEGORI UNTUK MENAMPILKAN NILAI --}}
                             @foreach ($kategori as $kat)
                                 @php
                                     $hasil = $hasilTes[$kat->id] ?? null;
-                                    $nilai = $hasil->nilai ?? 0;
-                                    $lulus = $nilai >= 75;
-
-                                    if (!$lulus) {
-                                        $semuaLulus = false;
-                                    }
                                 @endphp
 
                                 <td>
-                                    <span class=" fw-bold {{ $lulus ? 'text-success' : 'text-danger' }}">
-                                        {{ $nilai }}
-                                    </span>
+                                    @if ($kat->tipe_kriteria === 'threshold')
+                                        @if ($hasil && $hasil->lulus_threshold)
+                                            <span class="badge bg-success">Lulus</span>
+                                        @else
+                                            <span class="badge bg-danger">Tidak</span>
+                                        @endif
+                                    @else
+                                        <span class="fw-bold">
+                                            {{ $hasil->nilai ?? 0 }}
+                                        </span>
+                                    @endif
                                 </td>
                             @endforeach
 
-                            {{-- HASIL AKHIR --}}
-                            <td>
-                                @if ($semuaLulus)
-                                    <span class="badge text-white bg-success">Lolos Seleksi</span>
-                                @else
-                                    <span class="badge text-white bg-danger">Tidak Lolos</span>
-                                @endif
+                            <td class="fw-bold">
+                                {{ $s->dataDiri->nilai_akhir ?? 0 }}
                             </td>
 
+                            <td>
+                                @if ($status === 'lolos_seleksi')
+                                    <span class="badge bg-success">Lolos Seleksi</span>
+                                @else
+                                    <span class="badge bg-danger">Tidak Lolos</span>
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
