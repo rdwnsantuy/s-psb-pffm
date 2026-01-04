@@ -15,7 +15,6 @@ class DaftarUlangController extends Controller
     {
         $user = Auth::user();
 
-        // hanya bisa daftar ulang jika lolos seleksi
         if ($user->dataDiri->status_seleksi != 'lolos_seleksi') {
             return back()->with('error', 'Anda belum dinyatakan lolos seleksi.');
         }
@@ -48,7 +47,7 @@ class DaftarUlangController extends Controller
         PembayaranSantri::create([
             'user_id' => Auth::id(),
             'jenis' => 'daftar_ulang',
-            'nominal_bayar' => 0,
+            'nominal_bayar' => $request->nominal_bayar,
             'rekening_id' => $request->rekening_id,
             'bukti_transfer' => $path,
             'status' => 'menunggu'

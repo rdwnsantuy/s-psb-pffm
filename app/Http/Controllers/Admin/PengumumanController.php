@@ -47,31 +47,10 @@ class PengumumanController extends Controller
             ]
         );
 
-        $santri = User::where('role', 'santri')
-            ->whereHas('dataDiri')
-            ->with(['hasilTes', 'dataDiri'])
-            ->get();
-
-        foreach ($santri as $s) {
-            $hasil = $s->hasilTes;
-
-            if ($hasil->isEmpty()) {
-                continue;
-            }
-
-            $lulusSemua = $hasil->every(fn($h) => $h->nilai >= 75);
-
-            $s->dataDiri->update([
-                'status_seleksi' => $lulusSemua
-                    ? 'lolos_seleksi'
-                    : 'tidak_lolos_seleksi',
-            ]);
-        }
-
         $pengumuman->update([
             'status' => 'sudah',
         ]);
 
-        return back()->with('success', 'Pengumuman berhasil diumumkan dan status santri diperbarui.');
+        return back()->with('success', 'Pengumuman berhasil diumumkan.');
     }
 }
