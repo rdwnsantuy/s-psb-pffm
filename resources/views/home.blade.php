@@ -166,13 +166,13 @@
                 </div>
             </div>
 
-            {{-- <div class="col-md-3">
+            <div class="col-md-3">
                 <div class="dash-card">
                     <div class="icon-box icon-green"><i class="bi bi-check-circle-fill"></i></div>
                     <div class="dash-title">Pembayaran Diterima</div>
                     <div class="dash-value">{{ $terverifikasi ?? 0 }}</div>
                 </div>
-            </div> --}}
+            </div>
 
             <div class="col-md-3">
                 <div class="dash-card">

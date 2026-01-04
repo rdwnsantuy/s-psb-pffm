@@ -33,7 +33,7 @@
                         <tr>
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $user->name }}</td>
-                            <td>{{ $p->registration_id }}</td>
+                            <td>{{ $user->registration_id }}</td>
                             <td>{{ $user->dataDiri->pendidikan_tujuan ?? '-' }}</td>
 
                             <td>

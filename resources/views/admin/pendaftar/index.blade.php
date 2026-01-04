@@ -64,6 +64,7 @@
                                             'lolos_seleksi' => 'success',
                                             'tidak_lolos_seleksi' => 'danger',
                                             'diterima' => 'success',
+                                            'gugur' => 'dark',
                                         ][$st];
                                     @endphp
 
@@ -213,6 +214,7 @@
                                                         'lolos_seleksi' => 'success',
                                                         'tidak_lolos_seleksi' => 'danger',
                                                         'diterima' => 'success',
+                                                        'gugur' => 'dark',
                                                     ][$st];
                                                 @endphp
 
