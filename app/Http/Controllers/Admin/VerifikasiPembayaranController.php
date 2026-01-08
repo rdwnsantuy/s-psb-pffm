@@ -51,7 +51,7 @@ class VerifikasiPembayaranController extends Controller
                 ]);
         }
 
-        return back()->with('success', 'Pembayaran telah disetujui.');
+        return back()->with('success', 'Pembayaran telah disetujui dan santri dinyatakan DITERIMA.');
     }
 
 
