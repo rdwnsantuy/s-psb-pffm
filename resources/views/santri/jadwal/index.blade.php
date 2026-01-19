@@ -29,10 +29,6 @@
                     <td>{{ $user->name }}</td>
                 </tr>
                 <tr>
-                    <th>NISN</th>
-                    <td>{{ $user->dataDiri->nisn ?? '-' }}</td>
-                </tr>
-                <tr>
                     <th>Pendidikan Tujuan</th>
                     <td>{{ $user->dataDiri->pendidikan_tujuan ?? '-' }}</td>
                 </tr>
@@ -40,59 +36,22 @@
 
             <hr class="my-4">
 
-            <h5 class="fw-bold mb-3">Riwayat Tes Seleksi</h5>
-
             <div class="alert alert-success">
                 Tes telah diselesaikan.
             </div>
 
-            @foreach ($hasilTes as $item)
-                @php
-                    $data = json_decode($item->jawaban, true);
-                    $jawaban = $data['jawaban'] ?? [];
-                    $kategoriNama = $item->kategori->nama_kategori;
-                @endphp
-
-                <div class="card mb-4">
-                    <div class="card-header bg-light fw-bold">
-                        {{ $kategoriNama }}
+            @if ($jadwalTes && $jadwalTes->link_gmeet)
+                <div class="alert alert-primary d-flex align-items-center justify-content-between">
+                    <div>
+                        <strong>Tes Wawancara via Google Meet</strong><br>
+                        Silakan bergabung melalui link berikut sesuai jadwal.
                     </div>
 
-                    <div class="card-body">
-
-                        {{-- Tabel Detail Jawaban --}}
-                        <table class="table table-bordered">
-                            <thead class="table-light">
-                                <tr>
-                                    <th width="5%">No</th>
-                                    <th>Pertanyaan</th>
-                                    <th width="25%">Jawaban User</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @foreach ($jawaban as $i => $row)
-                                    @php
-                                        $soal = \App\Models\Soal::find($row['soal_id']);
-                                    @endphp
-                                    <tr>
-                                        <td>{{ $i + 1 }}</td>
-
-                                        <td>{{ $soal->pertanyaan ?? '-' }}</td>
-
-                                        <td>
-                                            {{ $row['jawaban_user_text'] ?? '-' }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-
-                    </div>
+                    <a href="{{ $jadwalTes->link_gmeet }}" target="_blank" class="btn btn-success">
+                        <i class="fab fa-google me-1"></i> Join Google Meet
+                    </a>
                 </div>
-            @endforeach
-
-
+            @endif
             <hr class="my-4">
         @else
             {{-- ======================== BELUM TEST :: TAMPIL NORMAL ======================== --}}
@@ -202,9 +161,8 @@
                     @foreach ($qris as $q)
                         @if ($q->aktif)
                             <div class="col-md-4 text-center mb-3">
-                                <img src="{{ asset('storage/' . $q->image) }}" class="img-fluid rounded shadow"
-                                    style="cursor:pointer" data-bs-toggle="modal"
-                                    data-bs-target="#modalQris{{ $q->id }}">
+                                <img src="{{ asset('storage/' . $q->image) }}" class="img-fluid rounded shadow" style="cursor:pointer"
+                                    data-bs-toggle="modal" data-bs-target="#modalQris{{ $q->id }}">
                                 <div class="mt-2 fw-bold">{{ $q->nama }}</div>
                             </div>
                         @endif
@@ -212,13 +170,12 @@
                 </div>
 
                 <hr>
-                <form action="{{ route('santri.jadwal.upload') }}" method="POST" enctype="multipart/form-data"
-                    class="mt-3">
+                <form action="{{ route('santri.jadwal.upload') }}" method="POST" enctype="multipart/form-data" class="mt-3">
                     @csrf
 
                     <div class="mb-3">
                         <label class="fw-bold">Pilih Rekening Tujuan</label>
-                        <select name="rekening_id" class="form-control" required>
+                        <select name="rekening_id" class="form-control">
                             <option value="">-- Pilih Rekening --</option>
                             @foreach ($rekening as $r)
                                 <option value="{{ $r->id }}">{{ $r->bank }} - {{ $r->nomor_rekening }}

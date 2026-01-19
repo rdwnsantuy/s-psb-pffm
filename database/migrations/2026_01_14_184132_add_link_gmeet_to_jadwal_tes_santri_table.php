@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('data_diri_santri', function (Blueprint $table) {
-            $table->float('nilai_akhir')->nullable();
+        Schema::table('jadwal_tes_santri', function (Blueprint $table) {
+            $table->string('link_gmeet')->nullable()->after('waktu_selesai');
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('data_diri', function (Blueprint $table) {
+        Schema::table('jadwal_tes_santri', function (Blueprint $table) {
             //
         });
     }
