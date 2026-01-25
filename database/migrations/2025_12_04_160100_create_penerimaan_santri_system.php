@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('no_telp')->nullable();
             $table->string('nik')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'santri', 'penguji'])->default('santri');
+            $table->enum('role', ['admin', 'santri'])->default('santri');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -239,13 +239,14 @@ return new class extends Migration
             $table->foreignId('tahun_akademik_id')->constrained('tahun_akademik')->cascadeOnDelete();
             $table->date('tanggal_pengumuman');
             $table->enum('status', ['belum', 'sudah'])->default('belum');
-            $table->text('note')->nullable();
+            $table->text('note')->nullable()->after('status');
             $table->timestamps();
         });
 
         Schema::table('data_diri_santri', function (Blueprint $table) {
             $table->foreignId('tahun_akademik_id')
                 ->nullable()
+                ->after('user_id')
                 ->constrained('tahun_akademik')
                 ->cascadeOnDelete();
         });
